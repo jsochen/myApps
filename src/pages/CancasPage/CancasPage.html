@@ -1,0 +1,15 @@
+<ion-header>
+  
+</ion-header>   
+<!--<ion-content scroll="false" style="padding: 0px;" >-->
+   <div [ngStyle]="{'width.px':Radius*2+6,'height.px':Radius*2+6,'background-size.px':Radius*2}" class="Page">
+     <canvas 
+      (touchmove)="CanvasMove($event)"
+      (touchstart)="CanvasStart($event)"
+        [id]="canvasId"
+        width="304px" 
+        height="304px">
+      </canvas>
+      
+   </div>
+<!--</ion-content>-->

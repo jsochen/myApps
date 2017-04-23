@@ -1,0 +1,21 @@
+<div 
+(touchmove)="TouchMoveEvent($event)"
+(touchstart)="TouchStartEvent($event)"
+ class="container">
+   <div class="allView">
+       <div class="lowdiv">
+           <img src="../../assets/images/girl_13_wallpaper.png" alt="">
+       </div>
+       <div class="highdiv">
+           <div class="firstdiv" [ngStyle]="FirstStyle"></div>
+           <div class="seconddiv" [ngStyle] = "SecondStyle"></div>
+           <div class="Thirddiv" [ngStyle] = "ThirdStyle"></div>
+       </div>
+       <div class="superhighdiv">
+           <div class="progressDiv">
+               <span>{{numbers}}</span>
+               <i>%</i>
+           </div>
+       </div>
+   </div>
+</div>
