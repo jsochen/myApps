@@ -10,6 +10,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Camera} from '@ionic-native/camera';
 import {CancasPage} from '../pages/CancasPage/CancasPage';
+import {CanvasComponent} from '../pages/canvas/canvas.component';
+import{AwsComponent} from '../pages//aws/aws.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import {CancasPage} from '../pages/CancasPage/CancasPage';
     Page2,
     HeroFormComponent,
     CancasPage,
-    CrameComponent
+    CrameComponent,
+    CanvasComponent,
+    AwsComponent
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -31,7 +35,9 @@ import {CancasPage} from '../pages/CancasPage/CancasPage';
     Page2,
     HeroFormComponent,
     CancasPage,
-    CrameComponent
+    CrameComponent,
+    CanvasComponent,
+    AwsComponent
   ],
   providers: [
     StatusBar,

@@ -4,36 +4,55 @@ import {getElementLeft,getElementTop} from './common';
 var PA = Math.PI;
 
 @Component({
-  selector: 'Cancas-Page',
-  templateUrl: 'CancasPage.html'
+  selector: 'app-canvas',
+  templateUrl: './canvas.component.html',
 })
 
-export class CancasPage  implements OnChanges,AfterViewInit{
+export class CanvasComponent  implements OnChanges,AfterViewInit{
     @Input() canvasId:string="mycanvas";    //绘制canvas的id唯一 默认 mycanvas
     @Input() progress:number=0;            //进度数值   默认 0
     @Input() max:number = 100;            //最大值  默认 100
     @Input() min:number =0;               //最小值  默认 0
     @Input() enable:boolean = true;     //是否不能使用 默认false不可以使用
     @Input() Radius:number = 150;
+    @Input() FrontImageUrl:string="";
+    @Input() behindImageUrl:string="";
     @Output() IdChange = new EventEmitter<string>();    //canvasid改变抛出事件
     @Output() ProgressChange = new EventEmitter<number>();  //进度改变抛出事件
     @Output() enableChange = new EventEmitter<boolean>();   //能否使用抛出事件
     offsetLeft:number = 0;
     offsetTop:number = 0;
     canvas:any;
+    FrontImage:any;
+    behindImage:any;
     constructor(){
-      //  setTimeout(()=>{
-      //    this.canvasId ="Changed";
-      //   // this.IdChange.emit(this.canvasId);
-      //  },5000)
+      
     };
     ngAfterViewInit(){
+      var img = new Image();   // Create new img element
+      img.addEventListener('load', ()=>{
+       this.FrontImage = img;
+      if(this.enable){
+        this.currentPaint(this.UserProgressToSys(this.progress,this.max,this.min)); 
+      }
+      else{
+        this.currentPaint(this.UserProgressToSys(this.max,this.max,this.min));
+      }
+       
+     }, false);
+     img.src = this.FrontImageUrl; // Set source path
+     console.log(this.FrontImageUrl)
+      var img2 = new Image();   // Create new img element
+     img2.addEventListener('load', ()=>{
+       this.behindImage = img2;
       if(this.enable){
         this.currentPaint(this.UserProgressToSys(this.progress,this.max,this.min));
       }
       else{
         this.currentPaint(this.UserProgressToSys(this.max,this.max,this.min));
       }
+     }, false);
+      img2.src =this.behindImageUrl ; // Set source path
       };
     ngOnChanges(changes: {[propKey: string]: SimpleChange}) {
       for(let propName in changes){
@@ -83,15 +102,11 @@ export class CancasPage  implements OnChanges,AfterViewInit{
     };
    //进度转角度
     ProgressToAngle(Progress){
-      console.log(Progress)
-      if(Progress>=0&&Progress<=PA/3){
+      if(Progress>=0&&Progress<=PA*4/3){
         return Progress+PA*2/3;
-      }else if(Progress>PA/3&&Progress<=PA/3*4){
-        return Progress -PA/3*4;
-      }else if(Progress>PA/3*4&&Progress<=PA/3*5){
-        return Progress -PA/3*4;
+      }else if(Progress>PA*4/3&&Progress<=PA*5/3){
+        return Progress-PA*4/3;
       }
-      return PA/3*4;
     };
     //按下事件
     
@@ -122,34 +137,72 @@ export class CancasPage  implements OnChanges,AfterViewInit{
     };
     //判断当前应该画多少度的
     currentPaint(endAngle){
-      console.log(endAngle)
-       if(endAngle>=PA*2/3+0.02||endAngle<PA/3-0.02)
-        {
-          var  canvas = this.clearCanvas(this.canvasId);
-          this.Painting(canvas,-1/3,-endAngle/PA);
-        }
-        else if(endAngle>=PA/3-0.02&&endAngle<=PA/3+0.1){
-          var  canvas = this.clearCanvas(this.canvasId);
-        }
-        else if(endAngle<=PA*2/3+0.02&&endAngle>=PA*2/3-0.1){
-           
-          var  canvas = this.clearCanvas(this.canvasId);
-          this.Painting(canvas,5/3,4/3);
-        }
+          if(endAngle<0){
+             endAngle=2*PA+endAngle;
+          }
+          if(endAngle>2/3*PA||endAngle<1/3*PA-0.01){
+            var  canvas = this.clearCanvas(this.canvasId);
+             this.Painting(canvas,0.5*PA,endAngle);
+          }else if(endAngle<=2/3*PA&&endAngle>=2/3*PA-0.1){
+            var  canvas = this.clearCanvas(this.canvasId);
+             this.drawImage(canvas,this.behindImage);
+          }else if(endAngle>=1/3*PA-0.01&&endAngle<1/3*PA+0.1){
+            var  canvas = this.clearCanvas(this.canvasId);
+             this.drawImage(canvas,this.FrontImage);
+          }
     };
     //在canvas画半圆
     Painting(canvas:any,startAngle:number,endAngle:number){
-       var ctx = canvas.getContext('2d');
-       ctx.beginPath();
-       ctx.strokeStyle ='rgb(197,197,197)';
-       ctx.lineWidth = 14.5;
-       ctx.lineCap = "square";
-       ctx.arc(this.Radius+2,this.Radius+2,this.Radius-6.5,-PA*startAngle,-PA*endAngle,true);
-       if(Math.abs((-PA*endAngle) - (-PA*startAngle)) > 2* 3.14158){
-         alert("的点点滴滴多多");
-       }
-       ctx.stroke();
+        var ctx = canvas.getContext('2d');
+        var devicePixelRatio = window.devicePixelRatio || 1;
+        var backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
+                        ctx.mozBackingStorePixelRatio ||
+                        ctx.msBackingStorePixelRatio ||
+                        ctx.oBackingStorePixelRatio ||
+                        ctx.backingStorePixelRatio || 1;
+        var ratio = devicePixelRatio / backingStoreRatio;
+        console.log(canvas.width)
+        canvas.width = (this.Radius+2) * ratio*2;
+        canvas.height= (this.Radius+2) * ratio*2;
+        ctx.scale(ratio, ratio);
+        ctx.fillStyle="red"
+      //  ctx.translate(0.5, 0.5);
+        if(this.behindImage){
+          ctx.drawImage(this.behindImage,0,0,this.Radius*2,this.Radius*2);
+        }
+        ctx.save();
+        ctx.beginPath();     
+        ctx.arc(this.Radius,this.Radius,this.Radius,startAngle,endAngle,false);
+        let x:number = Math.sin(endAngle-0.5*PA)*this. Radius;
+        let y:number = Math.cos(endAngle-0.5*PA)*this.Radius; 
+        ctx.moveTo(150-x, y+150);
+        ctx.lineTo(this.Radius,this.Radius);
+        ctx.lineTo(150,300);
+        ctx.closePath();
+        ctx.clip();
+        if(this.FrontImage){
+          ctx.drawImage(this.FrontImage,0,0,this.Radius*2,this.Radius*2);
+        }
+        ctx.restore();
+      
     };
+    drawImage(canvas:any,backImage:any){
+      var ctx = canvas.getContext('2d');
+      var devicePixelRatio = window.devicePixelRatio || 1;
+      var backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
+                      ctx.mozBackingStorePixelRatio ||
+                      ctx.msBackingStorePixelRatio ||
+                      ctx.oBackingStorePixelRatio ||
+                      ctx.backingStorePixelRatio || 1;
+      var ratio = devicePixelRatio / backingStoreRatio;
+      canvas.width = (this.Radius+2) * ratio*2;
+      canvas.height= (this.Radius+2) * ratio*2;
+      ctx.scale(ratio, ratio);
+      //ctx.translate(0.5, 0.5);
+       if(backImage){
+          ctx.drawImage(backImage,0,0,this.Radius*2,this.Radius*2);
+        }
+    }
     //获取角度
     CheckQuadrant(e){
        this.offsetLeft = getElementLeft(e.target);

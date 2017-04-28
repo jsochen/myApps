@@ -1,0 +1,11 @@
+$WM :300px;
+app-canvas{
+    .Page{
+        margin: 50px auto;
+//background: url('../assets/images/gril_14_wallpaper.png') no-repeat;
+        background-position: 2px 2px;
+        canvas{
+            position:relative;
+        }
+    }
+}

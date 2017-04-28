@@ -8,5 +8,12 @@
 </ion-header>
 
 <ion-content>
- <app-crame></app-crame>
+ <app-canvas 
+  behindImageUrl="assets/images/girl_13_wallpaper.png"
+  FrontImageUrl="assets/images/gril_14_wallpaper.png"
+ (ProgressChange)="ProgressChange($event)" 
+ [progress]="progress" 
+ style="height: 100%;">
+ </app-canvas>
+ <button (click)="itemTapped()">点击</button>
 </ion-content>

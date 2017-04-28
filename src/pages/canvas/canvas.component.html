@@ -8,8 +8,10 @@
       (touchstart)="CanvasStart($event)"
         [id]="canvasId"
         [width]="Radius*2+4" 
-        [height]="Radius*2+4" >
+        [height]="Radius*2+4"
+        [ngStyle]="{'width.px':Radius*2+4,'height.px':Radius*2+4}" >
       </canvas>
-      
+      <img id="_canvasImg" style="display: none;" [src]="FrontImageUrl" alt="">
+      <img id="_canvasImgbg" style="display: none;" [src]="behindImageUrl" alt="">
    </div>
 <!--</ion-content>-->

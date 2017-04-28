@@ -7,14 +7,14 @@ import { Page1 } from '../pages/page1/page1';
 import { Page2 } from '../pages/page2/page2';
 
 import {HeroFormComponent } from '../pages/Hero/hero-form.component';
-
+import{AwsComponent} from '../pages//aws/aws.component';
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = Page1;
+  rootPage: any = Page2;
 
   pages: Array<{title: string, component: any}>;
   
